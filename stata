@@ -1,0 +1,1768 @@
+
+/*Tests performed on the data*/
+swilk Age Height Weight FVC FEV1 Waist_cir TotalPhyActScore DistFromIndustry DistofHouseFromMainRoad Areaofhouse numberofppl height_mother wt bmi syst_2 diast_2 hb2 hb2 wbc2 glfast2maternal gl2hr_maternal chol2 hdlchol2 triglyceride_2ndvisit homar2 betar2 fatherage fatherheight fatherweight fatherwaist fatherbmi fatherhb fatherwbc fatherrbc fatherglfast fatherglucose2hr fatherhomaR FatherbetaHOMAr birthweightkg length headcirc chestcircum chestcircum abdcirc midarmcircm tricepcircum subscapularnewborn footlennewborn cage6 childwt6 childt6 csht6 chc6 cma6 cwaist6 chip6 cbi6 ctr6 css6 csu6 cmthigh6 cmcalf6 cmthsf6 cmcasf6 cagei cwt_i chc_i cht_i csht_i cma_i cwaist_i chip_i cbi_i ctr_i css_i csu_i cbmi_i cagedx_18y cwt_18y cht_18y cbmi_18y csht_18y cwaist_18y chip_18y chc_18y cma_18y ctr_18y css_18y cbi_18y csu_18y csyst_18y cdiast_18y chb_18y cwbc_18y crbc_18y cgluf_18y cglu2hr_18y cchol_18y chdl_18y ctg_18y cbmc7 cfm7 clm7 cbmd7 carea7 cfatp_18y cleanp_18y cdispindex_18y chomabeta_18y chomas_18y chomar_18y chomar_18y chomas_18y chomabeta_18y cdispindex_18y cfatp_18y cleanp_18y
+
+swilk R5
+qnorm R5
+estat hettest
+
+swilk X5
+qnorm X5
+estat hettest
+
+swilk X20
+qnorm X20
+estat hettest
+
+swilk R20
+qnorm R20
+estat hettest
+
+swilk GLIfvcpercentpredicted
+qnorm GLIfvcpercentpredicted
+estat hettest
+
+swilk GLIfevpercentpredicted
+qnorm GLIfevpercentpredicted
+estat hettest
+
+/* Transformation step for non normal data*/
+
+
+/* checking for high correlations between variables in the model*/
+
+correlate FEV1 Waist_cir SunlightExpHours Areaofhouse numberofppl noofroomsinhouse 
+Numberofwindows YearsofSepKitchen ComplexCarbohydrates HighCarbohydrate HighqualityProteinScore
+ LowQualityProteinScore ironscore antioxidantscore gestationalageduringdelivery age wt height_mother 
+ bmi syst_2 diast_2 hb2 wbc2 rbc2 glfast2maternal gl2hr_maternal chol2 hdlchol2 triglyceride_2ndvisit 
+ homar2 betar2 fatherage fatherheight fatherweight fatherwaist fatherbmi fatherhb fatherwbc fatherrbc 
+ fatherglfast fatherglucose2hr fatherhomaR FatherbetaHOMAr birthweightkg
+ 
+ /*Other correlations*/
+ 
+ /* Correlations FVC*/
+
+correlate GLIfvcpercentpredicted HighCarbohydrate
+correlate GLIfvcpercentpredicted HighqualityProteinScore
+correlate GLIfvcpercentpredicted ironscore
+correlate GLIfvcpercentpredicted gestationalageduringdelivery
+correlate GLIfvcpercentpredicted bmi
+correlate GLIfvcpercentpredicted syst_2
+correlate GLIfvcpercentpredicted diast_2 hb2 wbc2 rbc2 glfast2maternal gl2hr_maternal
+correlate GLIfvcpercentpredicted chol2 hdlchol2 triglyceride_2ndvisit homar2 betar2 fatherage fatherheight fatherweight fatherwaist fatherbmi fatherhb fatherwbc fatherrbc fatherglfast fatherglucose2hr fatherhomaR FatherbetaHOMAr
+correlate GLIfvcpercentpredicted birthweightkg length headcirc chestcircum abdcirc midarmcircm tricepcircum subscapularnewborn footlennewborn
+correlate GLIfvcpercentpredicted csyst_18y cdiast_18y chb_18y cwbc_18y crbc_18y cbmc7 cfm7 clm7 cbmd7 cdispindex_18y chomabeta_18y wtgain heightincrease
+
+/* Correlations FEV1*/
+
+correlate GLIfevpercentpredicted HighCarbohydrate
+correlate GLIfevpercentpredicted HighqualityProteinScore
+correlate GLIfevpercentpredicted ironscore
+correlate GLIfevpercentpredicted gestationalageduringdelivery
+correlate GLIfevpercentpredicted bmi
+correlate GLIfevpercentpredicted syst_2
+correlate GLIfevpercentpredicted diast_2 hb2 wbc2 rbc2 glfast2maternal gl2hr_maternal
+correlate GLIfevpercentpredicted chol2 hdlchol2 triglyceride_2ndvisit homar2 betar2 fatherage fatherheight fatherweight fatherwaist fatherbmi fatherhb fatherwbc fatherrbc fatherglfast fatherglucose2hr fatherhomaR FatherbetaHOMAr
+correlate GLIfevpercentpredicted birthweightkg length headcirc chestcircum abdcirc midarmcircm tricepcircum subscapularnewborn footlennewborn
+correlate GLIfevpercentpredicted csyst_18y cdiast_18y chb_18y cwbc_18y crbc_18y cbmc7 cfm7 clm7 cbmd7 cdispindex_18y chomabeta_18y wtgain heightincrease
+
+
+/* Testing for (markers of metabolic syndrome) hypertension and insulin resistance with GLI percentage of predicted FEV1 and GLI percentage of predicted FVC*/
+
+generate insulinresmother=0
+replace insulinresmother=1 if  homar2>=1.9
+replace insulinresmother=0 if homar2<1.9
+tab insulinresmother
+
+generate insulinressubject=0
+replace insulinressubject=1 if  chomar_18y >=1.9
+tab insulinressubject
+
+ttest GLIfvcpercentpredicted ,by(insulinresmother)
+ttest GLIfvcpercentpredicted ,by( insulinressubject )
+ttest GLIfevpercentpredicted ,by(insulinresmother)
+ttest GLIfevpercentpredicted ,by( insulinressubject )
+ 
+generate hypertensivemother=0
+replace hypertensivemother=1 if syst_2>139| diast_2>89
+tab hypertensivemother
+ttest GLIfvcpercentpredicted ,by( hypertensivemother )
+ttest GLIfevpercentpredicted ,by( hypertensivemother )
+
+/* Testing for differences in physical activity, nutrition by Gender*/
+
+graph box HighqualityProteinScore, by( Gender )
+graph box HighqualityProteinScore, by( Gender )
+ttest HighqualityProteinScore ,by( Gender )
+ttest LowQualityProteinScore ,by( Gender )
+ttest HighCarbohydrate ,by( Gender )
+graph box HighCarbohydrate , by( Gender )
+graph box GLIfvcpercentpredicted , by( highqualityproteinscorecat )
+graph box GLIfvcpercentpredicted , by( highqualityproteinscorecat )
+graph box GLIfvcpercentpredicted , over ( highqualityproteinscorecat ) hor
+graph box GLIfvcpercentpredicted , over ( waistcircumferencecat ) hor
+graph box GLIfevpercentpredicted , over ( waistcircumferencecat ) hor
+tab Gender BiomassExpall
+tab Gender BiomassExpall, row chi
+tab Ge CommuteviaRoadswithheavytraffic  , row chi
+tab Gender TimeSpentCommutinghrs  , row chi
+tab Gender DustExp  , row chi
+
+/* Recoding variables into categories for ANOVA test for differences in
+FEV1,FVC etc*/
+
+/*BMI*/
+generate subjectbmicat=0
+replace subjectbmicat=1 if subjectbmi<=18.25
+replace subjectbmicat=2 if subjectbmi>18.25 & subjectbmi<=21.06
+replace subjectbmicat=3 if subjectbmi>21.06 & subjectbmi<=24.16
+replace subjectbmicat=4 if subjectbmi>24.16
+tab subjectbmicat
+
+/*Maternal BMI category Gen*/
+generate maternalbmicat=0
+replace maternalbmicat=1 if bmi<=16.77
+replace maternalbmicat=2 if bmi>16.77 & bmi<=17.73
+replace maternalbmicat=3 if bmi>17.73 & bmi<=19.28
+replace maternalbmicat=4 if bmi>19.28
+tab maternalbmicat
+
+/* Waist Circumference Categories*/
+generate waistcircumferencecat=0
+replace waistcircumferencecat=1 if Waist_cir<=66.8
+replace waistcircumferencecat=2 if Waist_cir>66.8 & Waist_cir<=75.00
+replace waistcircumferencecat=3 if Waist_cir>75.00 & Waist_cir<=82.30
+replace waistcircumferencecat=4 if Waist_cir>82.30
+tab waistcircumferencecat
+
+/* Sunlight Exposure Hours Categories*/
+generate sunlightexphrscat=0
+replace sunlightexphrscat=1 if SunlightExpHours<=1
+replace sunlightexphrscat=2 if SunlightExpHours>1 & SunlightExpHours<=2
+replace sunlightexphrscat=3 if SunlightExpHours>2 & SunlightExpHours<=5
+replace sunlightexphrscat=4 if SunlightExpHours>5
+tab sunlightexphrscat
+
+/* Sunlight Exposure Hours Categories*/
+generate sunlightexphrscat=0
+replace sunlightexphrscat=1 if SunlightExpHours<=1
+replace sunlightexphrscat=2 if SunlightExpHours>1 & SunlightExpHours<=2
+replace sunlightexphrscat=3 if SunlightExpHours>2 & SunlightExpHours<=5
+replace sunlightexphrscat=4 if SunlightExpHours>5
+tab sunlightexphrscat
+
+/*Total Physical Acitivity Categories*/
+
+generate physicalactcat=0
+replace physicalactcat=1 if TotalPhyActScore<=2225.25
+replace physicalactcat=2 if TotalPhyActScore>2225.25 & TotalPhyActScore<=4577.75
+replace physicalactcat=3 if TotalPhyActScore>4577.75 & TotalPhyActScore<=11878.5
+replace physicalactcat=4 if TotalPhyActScore>11878.5
+tab physicalactcat
+
+/*Total P*/
+
+generate physicalactcat=0
+replace physicalactcat=1 if TotalPhyActScore<=2225.25
+replace physicalactcat=2 if TotalPhyActScore>2225.25 & TotalPhyActScore<=4577.75
+replace physicalactcat=3 if TotalPhyActScore>4577.75 & TotalPhyActScore<=11878.5
+replace physicalactcat=4 if TotalPhyActScore>11878.5
+tab physicalactcat
+
+/* Protein Scores and GLI percentage of predicted FVC and GLI percentage of predicted FEV1*/
+
+generate highqualityproteinscorecat=0
+replace highqualityproteinscorecat=1 if HighqualityProteinScore<=20
+replace highqualityproteinscorecat=2 if HighqualityProteinScore>20& HighqualityProteinScore<=34
+replace highqualityproteinscorecat=3 if HighqualityProteinScore>34 & HighqualityProteinScore<=48
+replace highqualityproteinscorecat=4 if HighqualityProteinScore>48
+tab highqualityproteinscorecat
+
+/* High Carbohydrate Score and GLI percentage of predicted FVC and GLI percentage of predicted FEV1*/
+
+generate highcarbscorecat=0
+replace highcarbscorecat=1 if  HighCarbohydrate <=53.50
+replace highcarbscorecat=2 if HighCarbohydrate>53.50 & HighCarbohydrate<=70
+replace highcarbscorecat=3 if HighCarbohydrate>70 & HighCarbohydrate<=99
+replace highcarbscorecat=4 if HighCarbohydrate>99
+tab highcarbscorecat
+graph box GLIfvcpercentpredicted,over( highcarbscorecat )
+graph box GLIfevpercentpredicted ,over( highcarbscorecat )
+
+/* Gestational Age , GLI percentage of predicted FVC and GLI percentage of predicted FEV1*/
+
+generate gestagecat=0
+replace gestagecat=1 if  gestationalageduringdelivery <=38
+replace gestagecat=2 if gestationalageduringdelivery>38 & gestationalageduringdelivery<=39
+replace gestagecat=3 if gestationalageduringdelivery>39 & gestationalageduringdelivery<=40
+replace gestagecat=4 if gestationalageduringdelivery>40
+tab gestagecat
+graph box GLIfvcpercentpredicted,over( gestagecat )
+graph box GLIfevpercentpredicted ,over( gestagecat )
+
+* Maternal BMI, GLI percentage of predicted FVC and GLI percentage of predicted FEV1*/
+
+
+generate maternalbmicat=0
+replace maternalbmicat=1 if  bmi <=16.77
+replace maternalbmicat=2 if bmi>16.77 & bmi<=17.73
+replace maternalbmicat=3 if bmi>17.73 & bmi<=19.29
+replace maternalbmicat=4 if bmi>19.29
+tab maternalbmicat
+graph box GLIfvcpercentpredicted,over( maternalbmicat )
+graph box GLIfevpercentpredicted ,over( maternalbmicat )
+
+/*FEV1 <70% OF Predicted ERS ECC Eqn*/
+generate fev1ersperntageofpredicted=0
+replace fev1ersperntageofpredicted =(( FEV1/ Pred_FEV1)*100)
+count if fev1ersperntageofpredicted<70
+count if fev1ersperntageofpredicted<70 & Gender==0
+count if fev1ersperntageofpredicted<70 & Gender==1
+
+/*FVC <70% of Predicted ERS-ECC Eqn*/
+generate fvcersperntageofpredicted=0
+replace fvcersperntageofpredicted =((  FVC/  Pred_FVC)*100)
+count if fvcersperntageofpredicted<70
+count if fvcersperntageofpredicted<70 & Gender==0
+count if fvcersperntageofpredicted<70 & Gender==1
+
+/* FEV1/FVC- Obstruction*/
+generate fev1byfvcers=0
+replace fev1byfvcers= (( FEV1 /FVC )*100)
+count if  fev1byfvcers<70
+count if fev1byfvcers<70 & Gender==1
+count if fev1byfvc<70 & Gender==0
+
+/*ANOVA test */
+
+/* predicted FEV1 GLI */
+
+pwmean GLIfevpercentpredicted,over( highqualityproteinscorecat) mcompare(tukey) effects
+pwmean GLIfevpercentpredicted,over( highcarbscorecat ) mcompare(tukey) effects
+pwmean GLIfevpercentpredicted,over( gestagecat ) mcompare(tukey) effects
+pwmean GLIfevpercentpredicted,over( insulinresmother ) mcompare(tukey) effects
+pwmean GLIfevpercentpredicted,over( insulinressubject ) mcompare(tukey) effects
+pwmean GLIfevpercentpredicted,over( hypertensivemother ) mcompare(tukey) effects
+pwmean GLIfevpercentpredicted,over( maternalbmicat ) mcompare(tukey) effects
+pwmean GLIfevpercentpredicted,over( waistcircumferencecat ) mcompare(tukey) effects
+
+/* predicted FVC GLI */
+
+pwmean GLIfvcpercentpredicted ,over( highqualityproteinscorecat) mcompare(tukey) effects
+pwmean GLIfvcpercentpredicted ,over( highcarbscorecat ) mcompare(tukey) effects
+pwmean GLIfvcpercentpredicted ,over( gestagecat ) mcompare(tukey) effects
+pwmean GLIfvcpercentpredicted ,over( insulinresmother ) mcompare(tukey) effects
+pwmean GLIfvcpercentpredicted ,over( insulinressubject ) mcompare(tukey) effects
+pwmean GLIfvcpercentpredicted ,over( maternalbmicat ) mcompare(tukey) effects
+pwmean GLIfvcpercentpredicted ,over( maternalbmicat ) mcompare(tukey) effects
+pwmean GLIfvcpercentpredicted ,over( maternalbmicat ) mcompare(tukey) effects
+pwmean GLIfvcpercentpredicted ,over( waistcircumferencecat ) mcompare(tukey) effects
+
+/* Feb 20th Final Models*/
+
+/* FVC  % predicted */
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex csht6  cwt_i chip_18y css_18y csyst_18y cglu2hr_18y ctg_18y cbmc7 X5 SunlightExpHours, beta
+
+
+/* comparing GLM models*/
+glm GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex csht6  cwt_i chip_18y css_18y csyst_18y cglu2hr_18y ctg_18y cbmc7 X5 SunlightExpHours, family(gaussian) link(identity)
+
+regress transGLIFEVPERCENTAGEOFPREDICTED  TotalPhyActScore  HighCarbohydrate HighqualityProteinScore bmi betar2 fatherhomaR  hdlchol2 fatherheight fatherhb gestationalagefinal headchestcircumindex length wtgain cht_i  cbmi_18y csu_18y  cchol_18y cdispindex_18y chomar_18y csyst_18y chb_18y cwbc_18y crbc_18y Waist_cir X5 CommuteviaRoadswithheavytraffic HouseWalls,beta
+
+drop resid
+predict resid,r
+swilk resid
+qnorm resid
+
+/* for forest plot*/
+regress zGLIfvcpercentpredicted zWaist_cir zTotalPhyActScore zHighCarbohydrate zHighqualityProteinScore zLowQualityProteinScore zheight_mother zsyst_2 zhb2 zlength zheadchestcircumindex  zheightincrease zctr6 zcwt_i zcbi_i zchip_18y zcss_18y zcsyst_18y zcglu2hr_18y zctg_18y zcbmc7 zX5 zSunlightExpHours
+coefplot, drop(_cons) xline(0)
+
+
+/* FEV1 Percentage of Predicted */
+glm transGLIFEVPERCENTAGEOFPREDICTED  TotalPhyActScore  HighCarbohydrate HighqualityProteinScore bmi betar2 fatherhomaR  hdlchol2 fatherheight fatherhb gestationalagefinal headchestcircumindex length wtgain cht_i  cbmi_18y csu_18y  cchol_18y cdispindex_18y chomar_18y csyst_18y chb_18y cwbc_18y crbc_18y Waist_cir X5 CommuteviaRoadswithheavytraffic HouseWalls,family(gamma) link(identity)
+ 
+ estat hettest
+drop resid
+predict resid,r
+swilk resid
+qnorm resid
+
+
+/* R5*/
+ 
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome 
+ /* for forest plot*/
+ 
+ regress zX5 zage zHeight zWaist_cir zHighqualityProteinScore zwt zheight_mother zmatwaistcir  zsyst_2 zhb2 zfatherglfast zfatherhomaR zgestationalageduringdelivery zchestcircum zchildwt6 zctr6 zcss6 zcwt_i zcsht_i zcbi_i  zFVC zTimeSpentCommutinghrs
+
+ coefplot, drop(_cons) xline(0)
+
+ estat hettest
+drop resid
+predict resid,r
+swilk resid
+qnorm resid
+
+/* X5*/
+
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir  syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+
+drop resid
+predict resid,r
+swilk resid
+qnorm resid
+
+/*for forest plot*/
+regress zX5 zage zHeight zWaist_cir zHighqualityProteinScore zwt zheight_mother zmatwaistcir  zsyst_2 hb zfatherglfast zfatherhomaR zgestationalageduringdelivery zchestcircum zchildwt6 zctr6 zcss6 zcwt_i zcsht_i zcbi_i  zFVC zTimeSpentCommutinghrs
+ coefplot, drop(_cons) xline(0)
+
+Absolute values
+
+/*FVC*/
+regress FVC Gender Age Height Weight syst_2 fatherglucose2hr birthweightkg headchestcircumindex length childwt6 cma_i  cht_18y chip_18y  cdiast_18y cdispindex_18y CookingInsideHouse ,beta
+/* FEV1 */
+
+regress FEV1 Gender Weight Height  ParentalEdu SeasonalCough TotalPhyActScore HighCarbohydrate HighqualityProteinScore LowQualityProteinScore syst_2 bmi hb2 hdlchol2 fatherglucose2hr headchestcircumindex  cage6 heightincrease cbmi_18y csyst_18y crbc_18y cgluf_18y  cchol_18y cbmd7 cdispindex_18y insulinressubject  R5,beta
+
+/*r5*/
+
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome
+
+/*X5*/
+
+regress X5 Age Height Gender c.Waist_cir#Gender BurningHouseholdWasteForHeating c.JobOutsideHome#Gender TimeSpentCommutinghrs CommuteviaRoadswithheavytraffic c.HighqualityProteinScore#Gender gestationalageduringdelivery c.wt#Gender c.height_mother#Gender c.matwaistcir#Gender  syst_2 hb fatherglfast fatherhomaR c.chestcircum#Gender childwt6 c.ctr6#Gender c.css6#Gender c.cwt_i#Gender csht_i c.cbi_i#Gender  c.FVC#Gender insulinressubject,beta
+
+
+
+/* factor analysis for GLI 2012 PERCENTAGE OF PREDICTED FVC*/
+
+global xlist Waist_cir Education ParentalEdu BiomassExpall  BurningHouseholdWasteForHeating JobOutsideHome SunlightExpHours TotalPhyActScore HoursSpentSittingperday TimeSpentCommutinghrs CommuteviaRoadswithheavytraffic DistofHouseFromMainRoad DoesWasteBurningOccurwithin3km HouseWalls Areaofhouse numberofppl TypeofRoof Numberofwindows CookingInsideHouse ComplexCarbohydrates HighCarbohydrate HighqualityProteinScore LowQualityProteinScore ironscore antioxidantscore R5 X20 gestationalageduringdelivery age wt height_mother matwaistcir syst_2 diast_2 hb2 wbc2 glfast2maternal chol2 hdlchol2 triglyceride_2ndvisit homar2 betar2 fatherheight fatherage subscapularnewborn csht6 css6 headchestcircumindex cbmi_i css_i cbmi_18y css_18y csyst_18y cdiast_18y chb_18y cwbc_18y crbc_18y cgluf_18y cglu2hr_18y cchol_18y chdl_18y ctg_18y cbmc7 cfm7 clm7 cbmd7 cdispindex_18y chomabeta_18y chomas_18y chomar_18y heightincrease wtgain
+global id
+global ncomp 4
+describe $xlist
+summarize $xlist
+corr $xlist
+factor $xlist
+screeplot
+screeplot,yline (1)
+factor $xlist,mineigen(1)
+factor $xlist,factor ($ncomp)
+factor $xlist,factor($ncomp) blanks(0.5)
+rotate,varimax
+rotate, varimax blanks(0.6)
+rotate, clear
+loadingplot
+scoreplot
+scoreplot,mlable($id)
+estat common
+predict f1 f2
+estat kmo
+alpha $xlist
+
+/* factor analysis for GLI 2012 PERCENTAGE OF PREDICTED FEV1*/
+
+global xlist TotalPhyActScore  HighCarbohydrate HighqualityProteinScore bmi betar2 fatherhomaR  hdlchol2 fatherheight fatherhb gestationalagefinal headchestcircumindex length wtgain cht_i  cbmi_18y csu_18y  cchol_18y cdispindex_18y chomar_18y csyst_18y chb_18y cwbc_18y crbc_18y Waist_cir X5 CommuteviaRoadswithheavytraffic HouseWalls
+global id
+global ncomp 2
+describe $xlist
+summarize $xlist
+corr $xlist
+factor $xlist
+screeplot
+screeplot,yline (1)
+factor $xlist,mineigen(1)
+factor $xlist,factor ($ncomp)
+factor $xlist,factor($ncomp) blanks(0.5)
+rotate,varimax
+rotate, varimax blanks(0.5)
+rotate, clear
+loadingplot
+scoreplot
+scoreplot,mlable($id)
+estat common
+predict f1 f2
+estat kmo
+alpha $xlist
+
+/* factor analysis for R5*/
+
+global xlist TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr headchestcircumindex footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome
+global id
+global ncomp 4
+describe $xlist
+summarize $xlist
+corr $xlist
+factor $xlist
+screeplot
+screeplot,yline (1)
+factor $xlist,mineigen(1)
+factor $xlist,factor ($ncomp)
+factor $xlist,factor($ncomp) blanks(0.4)
+rotate,varimax
+rotate, varimax blanks(0.4)
+rotate, clear
+loadingplot
+scoreplot
+scoreplot,mlable($id)
+estat common
+predict f1 f2 f3 f4
+estat kmo
+alpha $xlist
+
+/* factor analysis for X5*/
+
+global xlist Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir  syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs
+global id
+global ncomp 2
+describe $xlist
+summarize $xlist
+corr $xlist
+factor $xlist
+screeplot
+screeplot,yline (1)
+factor $xlist,mineigen(1)
+factor $xlist,factor ($ncomp)
+factor $xlist,factor($ncomp) blanks(0.6)
+rotate,varimax
+rotate, varimax blanks(0.6)
+rotate, clear
+loadingplot
+scoreplot
+scoreplot,mlable($id)
+estat common
+predict f1 f2
+estat kmo
+alpha $xlist
+
+
+
+/* Checking for interactions in FVC*/
+
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex csht6  cwt_i chip_18y css_18y csyst_18y cglu2hr_18y ctg_18y cbmc7 X5 SunlightExpHours, beta
+regress GLIfvcpercentpredicted c.Waist_cir#Gender TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex csht6  cwt_i chip_18y css_18y csyst_18y cglu2hr_18y ctg_18y cbmc7 X5 SunlightExpHours, beta
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore c.HighCarbohydrate#Gender HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex csht6  cwt_i chip_18y css_18y csyst_18y cglu2hr_18y ctg_18y cbmc7 X5 SunlightExpHours, beta
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate c.HighqualityProteinScore#Gender height_mother syst_2 hb2 length headchestcircumindex csht6  cwt_i chip_18y css_18y csyst_18y cglu2hr_18y ctg_18y cbmc7 X5 SunlightExpHours, beta
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore c.height_mother#Gender syst_2 hb2 length headchestcircumindex csht6  cwt_i chip_18y css_18y csyst_18y cglu2hr_18y ctg_18y cbmc7 X5 SunlightExpHours, beta
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length c.headchestcircumindex#Gender csht6  cwt_i chip_18y css_18y csyst_18y cglu2hr_18y ctg_18y cbmc7 X5 SunlightExpHours, beta
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex c.csht6#Gender  cwt_i chip_18y css_18y csyst_18y cglu2hr_18y ctg_18y cbmc7 X5 SunlightExpHours, beta
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex csht6 cwt_i c.chip_18y#Gender css_18y csyst_18y cglu2hr_18y ctg_18y cbmc7 X5 SunlightExpHours, beta
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex csht6 cwt_i chip_18y css_18y csyst_18y cglu2hr_18y ctg_18y cbmc7 X5 SunlightExpHours, beta
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex csht6 cwt_i chip_18y c.css_18y#Gender csyst_18y cglu2hr_18y ctg_18y cbmc7 X5 SunlightExpHours, beta
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex csht6 cwt_i chip_18y css_18y c.csyst_18y#Gender cglu2hr_18y ctg_18y cbmc7 X5 SunlightExpHours, beta
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex csht6 cwt_i chip_18y css_18y csyst_18y c.cglu2hr_18y#Gender ctg_18y cbmc7 X5 SunlightExpHours, beta
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex csht6 cwt_i chip_18y css_18y csyst_18y cglu2hr_18y c.ctg_18y#Gender cbmc7 X5 SunlightExpHours, beta
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex csht6 cwt_i chip_18y css_18y csyst_18y cglu2hr_18y ctg_18y c.cbmc7#Gender X5 SunlightExpHours, beta
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex csht6 cwt_i chip_18y css_18y csyst_18y cglu2hr_18y ctg_18y cbmc7 c.X5#Gender SunlightExpHours, beta
+
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex csht6 cwt_i chip_18y css_18y csyst_18y cglu2hr_18y ctg_18y cbmc7 X5 c.SunlightExpHours#Gender, beta
+ttest SunlightExpHours ,by(Gender)
+
+/*Checking for interactions by gender in FEV1*/
+
+regress GLIfvcpercentpredicted Waist_cir TotalPhyActScore HighCarbohydrate HighqualityProteinScore height_mother syst_2 hb2 length headchestcircumindex csht6  cwt_i chip_18y css_18y csyst_18y cglu2hr_18y ctg_18y cbmc7 X5 SunlightExpHours, beta
+regress GLIfevpercentpredicted TotalPhyActScore  HighCarbohydrate HighqualityProteinScore bmi betar2 fatherhomaR  hdlchol2 fatherheight fatherhb gestationalagefinal headchestcircumindex length wtgain cht_i  cbmi_18y csu_18y  cchol_18y cdispindex_18y chomar_18y csyst_18y chb_18y cwbc_18y crbc_18y Waist_cir X5 CommuteviaRoadswithheavytraffic HouseWalls
+regress GLIfevpercentpredicted TotalPhyActScore  c.HighCarbohydrate#Gender HighqualityProteinScore bmi betar2 fatherhomaR  hdlchol2 fatherheight fatherhb gestationalagefinal headchestcircumindex length wtgain cht_i  cbmi_18y csu_18y  cchol_18y cdispindex_18y chomar_18y csyst_18y chb_18y cwbc_18y crbc_18y Waist_cir X5 CommuteviaRoadswithheavytraffic HouseWalls
+regress GLIfevpercentpredicted TotalPhyActScore  HighCarbohydrate c.HighqualityProteinScore#Gender bmi betar2 fatherhomaR  hdlchol2 fatherheight fatherhb gestationalagefinal headchestcircumindex length wtgain cht_i  cbmi_18y csu_18y  cchol_18y cdispindex_18y chomar_18y csyst_18y chb_18y cwbc_18y crbc_18y Waist_cir X5 CommuteviaRoadswithheavytraffic HouseWalls
+regress GLIfevpercentpredicted TotalPhyActScore  HighCarbohydrate HighqualityProteinScore c.bmi#Gender betar2 fatherhomaR  hdlchol2 fatherheight fatherhb gestationalagefinal headchestcircumindex length wtgain cht_i  cbmi_18y csu_18y  cchol_18y cdispindex_18y chomar_18y csyst_18y chb_18y cwbc_18y crbc_18y Waist_cir X5 CommuteviaRoadswithheavytraffic HouseWalls
+regress GLIfevpercentpredicted TotalPhyActScore  HighCarbohydrate HighqualityProteinScore bmi c.betar2#Gender fatherhomaR  hdlchol2 fatherheight fatherhb gestationalagefinal headchestcircumindex length wtgain cht_i  cbmi_18y csu_18y  cchol_18y cdispindex_18y chomar_18y csyst_18y chb_18y cwbc_18y crbc_18y Waist_cir X5 CommuteviaRoadswithheavytraffic HouseWalls
+regress GLIfevpercentpredicted TotalPhyActScore  HighCarbohydrate HighqualityProteinScore bmi betar2 fatherhomaR  hdlchol2 fatherheight fatherhb gestationalagefinal c.headchestcircumindex#Gender length wtgain cht_i  cbmi_18y csu_18y  cchol_18y cdispindex_18y chomar_18y csyst_18y chb_18y cwbc_18y crbc_18y Waist_cir X5 CommuteviaRoadswithheavytraffic HouseWalls
+regress GLIfevpercentpredicted TotalPhyActScore  HighCarbohydrate HighqualityProteinScore bmi betar2 fatherhomaR  hdlchol2 fatherheight fatherhb gestationalagefinal headchestcircumindex length c.wtgain#Gender cht_i  cbmi_18y csu_18y  cchol_18y cdispindex_18y chomar_18y csyst_18y chb_18y cwbc_18y crbc_18y Waist_cir X5 CommuteviaRoadswithheavytraffic HouseWalls
+regress GLIfevpercentpredicted TotalPhyActScore  HighCarbohydrate HighqualityProteinScore bmi betar2 fatherhomaR  hdlchol2 fatherheight fatherhb gestationalagefinal headchestcircumindex length wtgain cht_i  cbmi_18y csu_18y  cchol_18y cdispindex_18y chomar_18y csyst_18y chb_18y cwbc_18y crbc_18y c.Waist_cir#Gender X5 CommuteviaRoadswithheavytraffic HouseWalls
+regress GLIfevpercentpredicted TotalPhyActScore  HighCarbohydrate HighqualityProteinScore bmi betar2 fatherhomaR  hdlchol2 fatherheight fatherhb gestationalagefinal headchestcircumindex length wtgain cht_i  cbmi_18y csu_18y  cchol_18y cdispindex_18y chomar_18y csyst_18y chb_18y cwbc_18y crbc_18y Waist_cir c.X5#Gender CommuteviaRoadswithheavytraffic HouseWalls
+
+/*Checking for interactions by gender in R5*/
+
+regress R5 c.TotalPhyActScore#Gender HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome
+
+regress R5 TotalPhyActScore c.HighqualityProteinScore#Gender antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome
+ttest HighqualityProteinScore, by(Gender)
+
+regress R5 TotalPhyActScore c.HighqualityProteinScore#Gender antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome
+regress R5 TotalPhyActScore HighqualityProteinScore c.antioxidantscore#Gender insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother c.fatherglucose2hr#Gender footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr c.footlennewborn#Gender wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain c.css6#Gender cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  c.cbi_18y#Gender cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y c.Weight#Gender FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight c.FVC#Gender HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC c.HouseWalls#Gender numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls c.numberofppl#Gender noofroomsinhouse SeparateKitchen  JobOutsideHome
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl c.noofroomsinhouse#Gender SeparateKitchen  JobOutsideHome
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse c.SeparateKitchen#Gender  JobOutsideHome
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr c.headchestcircumindex#Gender footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  JobOutsideHome,beta
+regress R5 TotalPhyActScore HighqualityProteinScore antioxidantscore insulinresmother fatherglucose2hr footlennewborn wtgain css6 cbi_i  cbi_18y cdiast_18y carea7 cdispindex_18y Weight FVC HouseWalls numberofppl noofroomsinhouse SeparateKitchen  c.JobOutsideHome#Gender
+tabulate Gender JobOutsideHome, chi2
+
+
+/* Checking for interactions by Gender in X5*/
+
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir  syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 c.Age#Gender Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir  syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender c.Height#Gender Waist_cir HighqualityProteinScore wt height_mother matwaistcir  syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height c.Waist_cir#Gender HighqualityProteinScore wt height_mother matwaistcir  syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir c.HighqualityProteinScore#Gender wt height_mother matwaistcir  syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore c.wt#Gender height_mother matwaistcir  syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt c.height_mother#Gender matwaistcir  syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother c.matwaistcir#Gender  syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir c.syst_2#Gender hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir c.syst_2#Gender hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery headabdominalcircumindex childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery headchestcircumindex childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery c.chestcircum#Gender childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 c.ctr6#Gender css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 c.css6#Gender cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 c.cwt_i#Gender csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i Gender csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i c.cbi_i#Gender  insulinressubject FVC BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject c.FVC#Gender BurningHouseholdWasteForHeating  JobOutsideHome CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+regress X5 Age Gender Height Waist_cir HighqualityProteinScore wt height_mother matwaistcir syst_2 hb fatherglfast fatherhomaR gestationalageduringdelivery chestcircum childwt6 ctr6 css6 cwt_i csht_i cbi_i  insulinressubject FVC BurningHouseholdWasteForHeating  c.JobOutsideHome#Gender CommuteviaRoadswithheavytraffic TimeSpentCommutinghrs ,beta
+
+
+//* Generation of variables for dichotomization *//
+
+count if csyst_18y>=120 & cdiast_18y>=80 & Gender==1
+count if csyst_18y>=120 & cdiast_18y>=80 & Gender==0
+count if syst_2 >=120 & diast_2>=80
+count if syst_2 >120 & diast_2>80
+count if syst_2 >120 & diast_2>80 & Gender==1
+count if syst_2 >120 & diast_2>80 & Gender==0
+count if csyst_18y>120 & cdiast_18y>80 & Gender==1
+count if csyst_18y>120 & cdiast_18y>80 & Gender==0
+count if hb2<14 & Gender==1
+count if hb2<12 & Gender==0
+count if chb_18y <12 & Gender==0
+count if chb_18y <14 & Gender==1
+count if bmi>25
+count if bmi>25 & Gender==1
+count if bmi>25 & Gender==0
+count if subjectbmi >25 & Gender==0
+count if subjectbmi >25 & Gender==1
+generate anemicsub=0
+generate anemicmother=0
+generate obesesubject=0
+generate obesemother=0
+generate irsubject=0
+generate irmother=0
+generate hypertensivesub=0
+generate hypertensivemother=0
+replace hypertensivesub=1 if csyst_18y>=140 & cdiast_18y>=90
+sum hypertensivesub
+replace hypertensivemother=1 if syst_2 >=120 & diast_2>=80
+sum hypertensivemother
+tab hypertensivemother
+replace irsubject=1 if chomar_18y>2.5
+tab irsubject
+replace irmother=1 if homar2>2.5
+tab irmother
+replace obesemother =1 if bmi>25
+replace obesesubject =1 if subjectbmi >25
+replace anemicsub=1 if hb2<14 & Gender==1
+replace anemicsub=1 if hb2<12 & Gender==0
+tab anemicsub
+count if anemicsub==1 & Gender==1
+count if anemicsub==1 & Gender==0
+tab anemicsub
+tab obesesubject
+tab irsubject
+tab hypertensivesub
+count if FEV1==.
+count if FVC==.
+count if wbc2==.
+count if syst_2 ==.
+count if wbc2==.
+count if chomar_18y==.
+count if homar2 ==.
+count if syst_2 ==.
+count if bmi ==.
+count if subjectbmi==.
+count if csyst_18y ==.
+count if chb_18y ==.
+count if hb2==.
+count if hb2<12
+count if hb2<12 & Gender==1
+count if hb2<12 & Gender==0
+count if hb2<12 & Gender==1
+count if hb2<12 & Gender==1
+count if hb2<12 & Gender==0
+count if chb_18y<14 & Gender==1
+count if chb_18y<12 & Gender==0
+count if anemicsub==1
+tab anemicsub
+drop anemicsub
+generate anemicsub=0
+replace anemicsub=1 if  chb_18y<14 & Gender==1
+replace anemicsub=1 if  chb_18y<12 & Gender==0
+tab anemicsub
+count if hb2<12 & Gender==1
+count if hb2<12 & Gender==0
+tab anemicmother
+count if bmi ==.
+
+
+
+//*ttest by dichotomies*//
+
+ttest FEV1 , by( anemicmother )
+ttest FEV1 , by( obesesubject )
+ttest FEV1 , by( obesemother )
+ttest FEV1 , by( irsubject )
+ttest FEV1 , by( irmother )
+ttest FEV1 , by( hypertensivesub )
+ttest FEV1 , by( hypertensivemother )
+ttest FEV1 , by( anemicsub )
+ttest FEV1 , by( anemicmother )
+ttest FVC , by( anemicmother )
+ttest FVC, by( obesesubject )
+ttest FVC, by( obesemother )
+ttest FVC, by( irsubject )
+ttest FVC, by( irmother )
+ttest FVC, by( hypertensivesub )
+ttest FVC, by( hypertensivemother )
+ttest FVC, by( anemicsub )
+ttest R5 , by( anemicmother )
+ttest R5, by( obesesubject )
+ttest R5, by( obesemother )
+ttest R5, by( irsubject )
+ttest R5, by( irmother )
+ttest FVC, by( hypertensivesub )
+ttest R5, by( hypertensivemother )
+ttest R5, by( anemicsub )
+ttest R5, by( hypertensivesub )
+ttest X5 , by( anemicmother )
+ttest X5, by( obesesubject )
+
+
+
+/* SEM diagram FEV percentage of predicted*/
+
+sem (Nutrition -> Protein, ) (Nutrition -> HighCarb, ) (Nutrition -> Antiox, ) (Nutrition -> WC, ) (Nutrition -> BMI18, ) (Nutrition -> Height, ) (Nutrition -> Weight, ) (Nutrition -> dispIndex, ) (Nutrition -> HDL_chol, ) (Nutrition -> syst_bp, ) (Nutrition -> head_cir_len, ) (Nutrition -> ht_vel5, ) (Nutrition -> subscap_vel5, ) (Nutrition -> bi_vel612, ) (Nutrition -> midarm612, ) (Nutrition -> wcvelpostpuberty, ) (Maternal_trait -> mother_height, ) (Maternal_trait -> Mat_WC, ) (Maternal_trait -> Mat_bmi, ) (Maternal_trait -> Mat_hb, ) (Maternal_trait -> WC, ) (Maternal_trait -> BMI18, ) (Maternal_trait -> Height, ) (Maternal_trait -> Weight, ) (Maternal_trait -> dispIndex, ) (Maternal_trait -> HDL_chol, ) (Maternal_trait -> syst_bp, ) (Maternal_trait -> head_cir_len, ) (Maternal_trait -> ht_vel5, ) (Maternal_trait -> subscap_vel5, ) (Maternal_trait -> bi_vel612, ) (Maternal_trait -> midarm612, ) (Maternal_trait -> wcvelpostpuberty, ) (WC -> FEV_per, ) (BMI18 -> FEV_per, ) (Height -> FEV_per, ) (Weight -> FEV_per, ) (dispIndex -> FEV_per, ) (HDL_chol -> FEV_per, ) (syst_bp -> FEV_per, ) (head_cir_len -> FEV_per, ) (ht_vel5 -> FEV_per, ) (subscap_vel5 -> FEV_per, ) (bi_vel612 -> FEV_per, ) (midarm612 -> FEV_per, ) (wcvelpostpuberty -> FEV_per, ), covstruct
+
+
+
+/* SEM diagram FVC percentage of predicted */
+
+
+
+
+/*creation of deried velocity variables*/
+
+generate htvelfirst5=((childt6 - length )/6)
+generate wtvelfirst5=(( childwt6- adjbw )/6)
+generate hctoht6y= chc6/ childt6
+generate hctoht12y= chc_i/ cht_i
+generate hctoht18y= chc_18y/ cht_18y
+generate midarmvelfirst5=((cma6 -midarmcircm)/6)
+generate trvelfirst5=(( ctr6 -tricepcircum )/6)
+generate ssvelfirst5=(( css6 - subscapularnewborn )/6)
+generate htvelchildhood=(( cht_i - childt6 )/6)
+generate shtvelchildhood=(( csht_i - csht6 )/6)
+generate wtvelchildhood=(( cwt_i - childwt6 )/6)
+generate wcvelchildhood =(( cwaist_i - cwaist6 )/6)
+generate midarmvelchildhood=(( cma_i - cma6 )/6)
+generate trvelchildhood=(( ctr_i -ctr6 )/6)
+generate ssvelchildhood=(( css_i- css6 )/6)
+generate hipcirvelchildhood=(( chip_i- chip6 )/6)
+generate bivelchildhood=(( cbi_i - cbi6 )/6)
+generate suvelchildhood=(( csu_i- csu6 )/6)
+generate htvelpostpuberty=(( cht_18y- cht_i )/6)
+generate shtvelpostpuberty=(( csht_18y - csht_i )/6)
+generate wtvelpostpuberty=(( cwt_18y - cwt_i )/6)
+generate wcvelpostpuberty=(( cwaist_18y- cwaist_i )/6)
+generate midarmvelpostpuberty=(( cma_18y - cma_i )/6)
+generate trvelpostpuberty=(( ctr_18y- ctr_i )/6)
+generate ssvelpostpuberty=(( css_18y - css_i )/6)
+generate hipcirvelpostpuberty=(( chip_18y- chip_i )/6)
+generate bivelpostpuberty=(( cbi_18y - cbi_i )/6)
+generate suvelpostpuberty=(( csu_18y -csu_i )/6)
+
+
+/* univariate analysis FVC*/
+
+regress GLIfvcpercentpredicted Waist_cir
+regress GLIfvcpercentpredicted Waist_cir,beta
+regress GLIfvcpercentpredicted htvelfirst5
+regress GLIfvcpercentpredicted htvelfirst5,beta
+regress GLIfvcpercentpredicted  HighqualityProteinScore
+regress GLIfvcpercentpredicted  HighqualityProteinScore,beta
+regress GLIfvcpercentpredicted  height_mother ,beta
+regress GLIfvcpercentpredicted  height_mother
+regress GLIfvcpercentpredicted  height_mother
+regress GLIfvcpercentpredicted  matwaistcir
+regress GLIfvcpercentpredicted  matwaistcir,beta
+regress GLIfvcpercentpredicted HighCarbohydrate
+regress GLIfvcpercentpredicted HighCarbohydrate,beta
+regress GLIfvcpercentpredicted  HouseWalls
+regress GLIfvcpercentpredicted  HouseWalls,beta
+regress GLIfvcpercentpredicted  midarmvelchildhood
+regress GLIfvcpercentpredicted  midarmvelchildhood
+regress GLIfvcpercentpredicted  midarmvelchildhood,beta
+regress GLIfvcpercentpredicted  X20
+regress GLIfvcpercentpredicted X20,beta
+regress GLIfvcpercentpredicted hcbylengthatbirth
+regress GLIfvcpercentpredicted hcbylengthatbirth,beta
+regress GLIfvcpercentpredicted cchol_18y
+regress GLIfvcpercentpredicted cchol_18y,beta
+regress GLIfvcpercentpredicted  TimeSpentCommutinghrs
+regress GLIfvcpercentpredicted  TimeSpentCommutinghrs,beta
+regress GLIfvcpercentpredicted csyst_18y
+regress GLIfvcpercentpredicted csyst_18y,beta
+regress GLIfvcpercentpredicted cbmi_18y
+regress GLIfvcpercentpredicted cbmi_18y,beta
+
+
+/* univariate analysis FVC*/
+
+regress GLIfevpercentpredicted X5
+regress GLIfevpercentpredicted Waist_cir  htvelfirst5  hcbylengthatbirth HighqualityProteinScore  HighCarbohydrate  X5  bmi,beta
+regress GLIfevpercentpredicted Waist_cir  htvelfirst5  hcbylengthatbirth HighqualityProteinScore  HighCarbohydrate  X5  bmi,beta
+regress GLIfevpercentpredicted Waist_cir,beta
+regress GLIfevpercentpredicted Waist_cir
+regress GLIfevpercentpredicted  htvelfirst5
+regress GLIfevpercentpredicted  htvelfirst5,beta
+regress GLIfevpercentpredicted Waist_cir  htvelfirst5  hcbylengthatbirth HighqualityProteinScore  HighCarbohydrate  X5  bmi,beta
+regress GLIfevpercentpredicted hcbylengthatbirth
+regress GLIfevpercentpredicted hcbylengthatbirth,beta
+regress GLIfevpercentpredicted HighqualityProteinScore
+regress GLIfevpercentpredicted HighqualityProteinScore,beta
+regress GLIfevpercentpredicted   HighCarbohydrate
+regress GLIfevpercentpredicted   HighCarbohydrate,beta
+regress GLIfevpercentpredicted  X5
+regress GLIfevpercentpredicted  X5,beta
+regress GLIfevpercentpredicted bmi
+regress GLIfevpercentpredicted bmi,beta
+
+
+/* Exo*/
+
+ Protein HighCarb Antiox Time_Comm Job_Out Wall_Qual Inside_cook mother_height Mat_WC Mat_bmi Mat_hb
+
+ 
+ /*Endo*/
+ 
+WC BMI18 Height Weight dispIndex HDL_chol syst_bp wcvelpostpuberty subscap_vel5 bi_vel612 ht_vel5 midarm612 head_cir_len
+
+
+/* population desc table */
+
+replace obst70=1 if GLIfvcpercentpredicted<70
+generate obs70=0
+generate obs80=0
+replace obs70=1 if (FEV1/FVC)<=0.7
+replace obs80=1 if (FEV1/FVC)<=0.8
+tabulate obs80 Gender,chi2
+tabulate obs70 Gender,chi2
+gen smallungs70=0
+gen smallungs80=0
+replace smallungs70=1 if  GLIfvcpercentpredicted<70
+replace smallungs80=1 if  GLIfvcpercentpredicted<80
+tabulate smallungs70 Gender,chi2
+tabulate smallungs80 Gender,chi2
+generate fev70=0
+generate fev80=0
+replace fev70=1 if zGLIfevpercentpredicted<70
+replace fev80=1 if zGLIfevpercentpredicted<80
+generate fev70=0
+generate fev80=0
+replace fev70=1 if GLIfevpercentpredicted<70
+replace fev80=1 if GLIfevpercentpredicted<80
+tabulate fev70 Gender,chi2
+tabulate fev80 Gender,chi2
+tabulate Smoker Gender,chi2
+
+tabulate CommuteviaRoadswithheavytraffic Gender,chi2
+tabulate BiomassExpall Gender,chi2
+tabulate BurningHouseholdWasteForHeating Gender,chi2
+ttest height_mother,by(Gender)
+ttest wt ,by(Gender)
+ttest bmi ,by(Gender)
+tabulate irmother Gender,chi2
+tabulate irsubject Gender,chi2
+tabulate hypertensivesub Gender,chi2
+tabulate hypertensivemother Gender,chi2
+tabulate anemicsub Gender,chi2
+tabulate anemicmother Gender,chi2
+tabulate obesesubject Gender,chi2
+tabulate obesemother Gender,chi2
+ttest HighCarbohydrate,by(Gender)
+sum  HighCarbohydrate if Gender==1
+sum  HighCarbohydrate if Gender==0
+
+
+
+
+
+
+
+
+
+
+//* March 2020 *//
+
+//* Analysis Changes *//
+
+//* z scores calculated for height, weight and BMI etc- all anthro variables converted to who z scores, while BP and cardiomet
+//* converted to within sample z scores. Followed by forward reg to identify variables and conditional reg for final models. 
+//*VIF, hettest performed for post est
+//* Beta plots made for repeated measures
+//* other analyses replicated. 
+
+
+//* z scores for height *// done using r macro deom who
+
+//*
+//* full varlist for fvc
+
+stepwise, pe(.20):regress GLIfvcpercentpredicted hcbylengthatbirth zchangehtfirst5 zchangewtfirst5 zchangebmifirst5 zwflbirth Waist_cir csyst_18y chb_18y cwbc_18y crbc_18y chdl_18y cbmc7 cfm7 cbmd7 cfatp_18y cleanp_18y cdispindex_18y chomar_18y gestationalagefinal age wt height_mother matwaistcir bmi syst_2 hb2 wbc2 rbc2 hdlchol2 homar2 obesemother hypertensivemother HighCarbohydrate HighqualityProteinScore  BiomassExpall TotalPhyActScore HoursSpentSittingperday HouseWalls Areaofhouse Education ParentalEdu
+
+
+drop resid
+predict resid,r
+qnorm resid
+swilk resid
+
+//*univariate analysis
+
+regress GLIfvcpercentpredicted  zhcbirth
+regress GLIfvcpercentpredicted zchangehtfirst5
+regress GLIfvcpercentpredicted Waist_cir
+regress GLIfvcpercentpredicted cdispindex_18y
+regress GLIfvcpercentpredicted chdl_18y
+regress GLIfvcpercentpredicted gestationalagefinal
+regress GLIfvcpercentpredicted age
+regress GLIfvcpercentpredicted height_mother
+regress GLIfvcpercentpredicted matwaistcir
+regress GLIfvcpercentpredicted syst_2
+regress GLIfvcpercentpredicted rbc2
+regress GLIfvcpercentpredicted HighCarbohydrate
+regress GLIfvcpercentpredicted HighqualityProteinScore
+regress GLIfvcpercentpredicted HouseWalls
+
+//*standardized beta coefficients *//
+
+regress GLIfvcpercentpredicted  zhcbirth zchangehtfirst5 Waist_cir cdispindex_18y chdl_18y gestationalagefinal age height_mother matwaistcir syst_2 rbc2 HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+
+
+
+//* fev1 
+
+stepwise, pe(.20):regress GLIfevpercentpredicted hcbylengthatbirth  zchangewtfirst5   Waist_cir csyst_18y chb_18y cwbc_18y crbc_18y chdl_18y cbmc7 cfm7 cbmd7 cfatp_18y cleanp_18y cdispindex_18y chomar_18y gestationalagefinal age wt height_mother matwaistcir bmi syst_2 hb2 wbc2 rbc2 hdlchol2 homar2 obesemother hypertensivemother  HighCarbohydrate HighqualityProteinScore  BiomassExpall TotalPhyActScore  HouseWalls Areaofhouse antioxidantscore  R5
+
+//*univariate analysis
+
+
+regress GLIfevpercentpredicted hcbylengthatbirth
+regress GLIfevpercentpredicted zchangewtfirst5
+regress GLIfevpercentpredicted Waist_cir
+regress GLIfevpercentpredicted R5
+regress GLIfevpercentpredicted cdispindex_18y
+regress GLIfevpercentpredicted age
+regress GLIfevpercentpredicted bmi
+regress GLIfevpercentpredicted HighCarbohydrate
+regress GLIfevpercentpredicted HighqualityProteinScore
+regress GLIfevpercentpredicted HouseWalls
+
+
+//* standardized beta coefficients *//
+
+regress GLIfevpercentpredicted hcbylengthatbirth zchangewtfirst5 Waist_cir R5 cdispindex_18y age bmi HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+
+//* R5
+
+stepwise, pe(.20):regress R5 Height hcbylengthatbirth zlenbirth zweibirth zwflbirth  zhcbirth  zhfaeighteen zwfaeighteen zbfaeighteen csyst_18y cdiast_18y chb_18y cwbc_18y chdl_18y  cfm7 clm7 cbmd7 cfatp_18y cleanp_18y cdispindex_18y chomar_18y obesesubject  hypertensivesub  age gestationalagefinal wt height_mother matwaistcir bmi  diast_2 hb2 wbc2 rbc2    homar2    anemicmother HighCarbohydrate HighqualityProteinScore antioxidantscore BiomassExpall JobOutsideHome  TotalPhyActScore CommuteviaRoadswithheavytraffic  Waist_cir ParentalEdu csu_i css_i
+ 
+//*standardized beta coefficient *//
+ 
+ regress R5 Height chdl_18y ParentalEdu matwaistcir HighCarbohydrate HighqualityProteinScore antioxidantscore TotalPhyActScore JobOutsideHome BiomassExpall,beta
+
+.............................................................
+
+//* X5
+
+
+
+regress X5 Height 
+regress X5 matwaistcir 
+regress X5 wt 
+regress X5 gestationalagefinal
+ regress X5 HighqualityProteinScore 
+ regress X5 age
+ regress X5  TotalPhyActScore
+ regress X5   JobOutsideHome
+ regress X5  betar2
+ 
+ //*standardized beta coefficient*//
+
+ regress X5 Height Weight gestationalagefinal age wt matwaistcir betar2 HighqualityProteinScore  TotalPhyActScore JobOutsideHome ,beta
+
+//*predicted R5 and X5 whole breath Regression equations of respiratory impedance of Indian adults measured by forced oscillation technique
+//*Sajal De, Nalok Banerjee, Gagan Deep Singh Kushwah, and Dharmendra Dharwey 2019-20*//
+
+
+generate predictedR5=R5
+generate predictedX5=X5
+
+replace predictedR5=(10.035-(0.057*Height)+(0.036*Weight)+(0.008*Age)) if Gender==1
+replace predictedR5=(9.697-(0.046*Height)+(0.033*Weight)) if Gender==0
+
+
+
+replace predictedX5=(-3.334+0.018*Height)-(0.009*Weight)-(0.004*Age)) if Gender==1
+replace predictedX5=(-4.40+(0.02*Height)) if Gender==0
+
+generate percentageofpredR5=R5
+generate percentageofpredX5=X5
+
+replace percentageofpredR5=(R5/predictedR5)*100
+replace percentageofpredX5=(X5/predictedX5)*100
+
+
+//* stepwise for predicted r5 and x5*//
+
+stepwise, pe(.20):regress percentageofpredR5 zwfaeighteen zhfaeighteen zwfatwelve zhfasix zwfasix zhcbirth zlenbirth zweibirth Waist_cir Education ParentalEdu BiomassExpall TotalPhyActScore TimeSpentCommutinghrs CommuteviaRoadswithheavytraffic HouseWalls noofroomsinhouse SeparateKitchen ComplexCarbohydrates HighCarbohydrate HighqualityProteinScore LowQualityProteinScore antioxidantscore age gestationalagefinal bmi height_mother syst_2 diast_2 hb2 wbc2 glfast2maternal hdlchol2 homar2 betar2 fatherage fatherheight adjbw hcbylengthatbirth
+
+
+regress  percentageofpredR5 zhfaeighteen
+
+regress  percentageofpredR5 antioxidantscore
+
+regress  percentageofpredR5 gestationalagefinal
+
+regress  percentageofpredR5 HighqualityProteinScore
+
+regress  percentageofpredR5 hb2
+
+regress  percentageofpredR5 TotalPhyActScore
+
+regress  percentageofpredR5 zhfasix
+
+regress  percentageofpredR5 ParentalEdu
+
+
+.............
+
+2nd model
+
+stepwise, pe(.20):regress percentageofpredR5 FVC zwfaeighteen zhfaeighteen zwfatwelve zwfasix zweibirth Waist_cir Education ParentalEdu BiomassExpall TotalPhyActScore TimeSpentCommutinghrs CommuteviaRoadswithheavytraffic noofroomsinhouse HighCarbohydrate HighqualityProteinScore LowQualityProteinScore antioxidantscore age gestationalagefinal bmi height_mother syst_2 diast_2 hb2 wbc2 glfast2maternal hdlchol2 betar2 fatherheight adjbw csyst_18y cdiast_18y cgluf_18y  cglu2hr_18y chdl_18y cbmd7  cdispindex_18y  chomar_18y
+
+regress  percentageofpredR5 zhfaeighteen
+regress  percentageofpredR5 antioxidantscore
+regress  percentageofpredR5 hb2
+regress  percentageofpredR5 HighqualityProteinScore
+regress  percentageofpredR5 TotalPhyActScore
+regress  percentageofpredR5 ParentalEdu
+
+//*stndardized beta coeff *//
+
+regress percentageofpredR5 zhfaeighteen hb2 HighqualityProteinScore antioxidantscore   TotalPhyActScore ParentalEdu,beta
+
+//* Percentage of predicted X5*//
+
+stepwise, pe(.20):regress percentageofpredX5 zwfaeighteen zhfaeighteen zwfatwelve zhfatwelve zwfasix zhfasix zhcbirth zwflbirth zlenbirth Education ParentalEdu BiomassExpall JobOutsideHome SunlightExpHours TotalPhyActScore CommuteviaRoadswithheavytraffic DistofHouseFromMainRoad TypeofRoof SeparateKitchen HighCarbohydrate HighqualityProteinScore antioxidantscore age height_mother matwaistcir syst_2 diast_2 hb2 wbc2 glfast2maternal chol2 homar2 fatherage fatherheight csyst_18y cdiast_18y chb_18y cwbc_18y cgluf_18y cglu2hr_18y cchol_18y ctg_18y cfm7 cbmd7 cdispindex_18y chomar_18y Waist_cir
+
+
+regress percentageofpredX5 matwaistcir
+regress percentageofpredX5 HighqualityProteinScore
+regress percentageofpredX5 TotalPhyActScore
+regress percentageofpredX5 ctg_18y
+regress percentageofpredX5 chomar_18y
+regress percentageofpredX5 ParentalEdu
+regress percentageofpredX5 cfm7
+regress percentageofpredX5 syst_2
+regress percentageofpredX5 Waist_cir
+
+
+//*stndardized beta coeff *//
+
+
+regress percentageofpredX5  Waist_cir ctg_18y chomar_18y cfm7  syst_2 matwaistcir HighqualityProteinScore TotalPhyActScore ParentalEdu,beta
+
+
+//* factor analysis *//
+
+
+
+/* factor analysis for GLI 2012 PERCENTAGE OF PREDICTED FVC*/
+
+global fvclist  zhcbirth zchangehtfirst5 Waist_cir cdispindex_18y chdl_18y gestationalagefinal age height_mother matwaistcir syst_2 rbc2 HighCarbohydrate HighqualityProteinScore HouseWalls
+global ncomp 2
+describe $fvclist
+summarize $fvclist
+corr $fvclist
+factor $fvclist
+screeplot
+screeplot,yline (1)
+factor $fvclist,mineigen(1)
+factor $fvclist,factor ($ncomp)
+factor $fvclist,factor($ncomp) blanks(0.36)
+rotate,varimax
+rotate, varimax blanks(0.3)
+rotate, clear
+loadingplot
+scoreplot
+scoreplot,mlable($id)
+estat common
+estat kmo
+alpha $fvclist
+predict fvcheadcirumference_catchup,fvcmaternalfac_nutrition
+
+/* factor analysis for GLI 2012 PERCENTAGE OF PREDICTED FEV1*/
+
+global fevlist hcbylengthatbirth zchangewtfirst5 Waist_cir R5 cdispindex_18y age bmi HighCarbohydrate HighqualityProteinScore HouseWalls
+describe $fevlist
+summarize $fevlist
+corr $fevlist
+factor $fevlist
+screeplot
+screeplot,yline (1)
+factor $fevlist,mineigen(1)
+factor $fevlist,factor ($ncomp)
+factor $fevlist,factor($ncomp) blanks(0.3)
+rotate,varimax
+rotate, varimax blanks(0.3)
+rotate, clear
+loadingplot
+scoreplot
+scoreplot,mlable($id)
+estat common
+estat kmo
+alpha $fevlist
+predict fevanthroenvresistance fevnutri
+
+/* factor analysis for R5*/
+
+ 
+global R5list  Height chdl_18y ParentalEdu matwaistcir HighCarbohydrate HighqualityProteinScore antioxidantscore TotalPhyActScore JobOutsideHome BiomassExpall
+ global id
+global ncomp 
+describe $R5list
+summarize $R5list
+corr $R5list
+factor $R5list
+screeplot
+screeplot,yline (1)
+factor $R5list,mineigen(1)
+factor $R5list,factor ($ncomp)
+factor $R5list,factor($ncomp) blanks(0.4)
+rotate,varimax
+rotate, varimax blanks(0.3)
+rotate, clear
+loadingplot
+scoreplot
+scoreplot,mlable($id)
+estat common
+estat kmo
+alpha $R5list
+predict r5nutri r5anthroactivenviron r5parentalenviocircumstance r5hdl18
+
+
+/* factor analysis for X5*/
+
+global X5xlist  Height Weight gestationalagefinal age wt matwaistcir betar2 HighqualityProteinScore  TotalPhyActScore JobOutsideHome
+global id
+global ncomp 2
+describe $
+summarize $X5xlist
+corr $X5xlist
+factor $X5xlist
+screeplot
+screeplot,yline (1)
+factor $X5xlist,mineigen(1)
+factor $X5xlist,factor ($ncomp)
+factor $X5xlist,factor($ncomp) blanks(0.3)
+rotate,varimax
+rotate, varimax blanks(0.3)
+rotate, clear
+loadingplot
+scoreplot
+scoreplot,mlable($id)
+estat common
+predict f1 f2
+estat kmo
+alpha $X5xlist
+predict X5anthroenviron X5maternalanthro
+
+//*SEM*//
+
+zscorehc_birth growthzscoreht5 maternal_age maternalwc highcarbfreq highprotfreq sub_wc sub_r5 poor_housewall sub_ht 
+antiox_freq phys_act commutingforwork biomassexp subhdl18y parental_edu sub_weight maternal_wt
+
+ iugr_indicators maternal_char_nutrition current_anthro_environment sub_nutrition r5nutrition anthro_environ_exercise 
+ socioec_parentalinfluences sub_hdl x5anthro_environ x5maternal_anthro
+ 
+ highcarbfreq highprotfreq antiox_freq sub_ht phys_act commutingforwork  parental_edu maternalwc biomassexp subhdl18y 
+
+ sub_ht sub_weight commutingforwork maternal_wt maternalwc 
+ 
+ x5anthro_environ x5maternal_anthro
+ 
+ 
+ //* Interactions *//
+ 
+ fvc
+ 
+ regress GLIfvcpercentpredicted  c.zhcbirth##Gender zchangehtfirst5 Waist_cir cdispindex_18y chdl_18y gestationalagefinal age height_mother matwaistcir syst_2 rbc2 HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfvcpercentpredicted  c.zhcbirth#Gender zchangehtfirst5 Waist_cir cdispindex_18y chdl_18y gestationalagefinal age height_mother matwaistcir syst_2 rbc2 HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfvcpercentpredicted  zhcbirth c.zchangehtfirst5#Gender Waist_cir cdispindex_18y chdl_18y gestationalagefinal age height_mother matwaistcir syst_2 rbc2 HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfvcpercentpredicted  zhcbirth zchangehtfirst5 c.Waist_cir#Gender cdispindex_18y chdl_18y gestationalagefinal age height_mother matwaistcir syst_2 rbc2 HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfvcpercentpredicted  c.zhcbirth##Gender zchangehtfirst5 Waist_cir cdispindex_18y chdl_18y gestationalagefinal age height_mother matwaistcir syst_2 rbc2 HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfvcpercentpredicted  zhcbirth zchangehtfirst5 Waist_cir c.cdispindex_18y#Gender chdl_18y gestationalagefinal age height_mother matwaistcir syst_2 rbc2 HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfvcpercentpredicted  zhcbirth zchangehtfirst5 Waist_cir cdispindex_18y c.chdl_18y#Gender gestationalagefinal age height_mother matwaistcir syst_2 rbc2 HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfvcpercentpredicted  zhcbirth zchangehtfirst5 Waist_cir cdispindex_18y chdl_18y c.gestationalagefinal#Gender age height_mother matwaistcir syst_2 rbc2 HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfvcpercentpredicted  zhcbirth zchangehtfirst5 Waist_cir cdispindex_18y chdl_18y gestationalagefinal c.age#Gender height_mother matwaistcir syst_2 rbc2 HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfvcpercentpredicted  zhcbirth zchangehtfirst5 Waist_cir cdispindex_18y chdl_18y gestationalagefinal age c.height_mother#Gender matwaistcir syst_2 rbc2 HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfvcpercentpredicted  zhcbirth zchangehtfirst5 Waist_cir cdispindex_18y chdl_18y gestationalagefinal age height_mother c.matwaistcir#Gender syst_2 rbc2 HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfvcpercentpredicted  zhcbirth zchangehtfirst5 Waist_cir cdispindex_18y chdl_18y gestationalagefinal age height_mother matwaistcir c.syst_2#Gender  rbc2 HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfvcpercentpredicted  zhcbirth zchangehtfirst5 Waist_cir cdispindex_18y chdl_18y gestationalagefinal age height_mother matwaistcir syst_2  c.rbc2#Gender  HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfvcpercentpredicted  zhcbirth zchangehtfirst5 Waist_cir cdispindex_18y chdl_18y gestationalagefinal age height_mother matwaistcir syst_2  rbc2  c.HighCarbohydrate#Gender  HighqualityProteinScore HouseWalls,beta
+regress GLIfvcpercentpredicted  zhcbirth zchangehtfirst5 Waist_cir cdispindex_18y chdl_18y gestationalagefinal age height_mother matwaistcir syst_2  rbc2  HighCarbohydrate c.HighqualityProteinScore#Gender  HouseWalls,beta
+
+fev1
+regress GLIfevpercentpredicted hcbylengthatbirth zchangewtfirst5 c.Waist_cir#Gender R5 cdispindex_18y age bmi HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfevpercentpredicted hcbylengthatbirth zchangewtfirst5 Waist_cir c.R5#Gender cdispindex_18y age bmi HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfevpercentpredicted hcbylengthatbirth zchangewtfirst5 Waist_cir R5 c.cdispindex_18y#Gender age bmi HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfevpercentpredicted hcbylengthatbirth zchangewtfirst5 Waist_cir R5 cdispindex_18y c.age#Gender bmi HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfevpercentpredicted hcbylengthatbirth zchangewtfirst5 Waist_cir R5 cdispindex_18y age c.bmi#Gender HighCarbohydrate HighqualityProteinScore HouseWalls,beta
+regress GLIfevpercentpredicted hcbylengthatbirth zchangewtfirst5 Waist_cir R5 cdispindex_18y age bmi c.HighCarbohydrate#Gender HighqualityProteinScore HouseWalls,beta
+regress GLIfevpercentpredicted hcbylengthatbirth zchangewtfirst5 Waist_cir R5 cdispindex_18y age bmi HighCarbohydrate c.HighqualityProteinScore#Gender HouseWalls,beta
+regress GLIfevpercentpredicted hcbylengthatbirth zchangewtfirst5 Waist_cir R5 cdispindex_18y age bmi HighCarbohydrate HighqualityProteinScore c.HouseWalls#Gender,beta
+
+r5
+regress R5 c.Height#Gender chdl_18y ParentalEdu matwaistcir HighCarbohydrate HighqualityProteinScore antioxidantscore TotalPhyActScore JobOutsideHome BiomassExpall
+regress R5 Height c.chdl_18y#Gender ParentalEdu matwaistcir HighCarbohydrate HighqualityProteinScore antioxidantscore TotalPhyActScore JobOutsideHome BiomassExpall
+regress R5 Height c.chdl_18y#Gender ParentalEdu matwaistcir HighCarbohydrate HighqualityProteinScore antioxidantscore TotalPhyActScore JobOutsideHome BiomassExpall,beta
+regress R5 c.Height#Gender chdl_18y ParentalEdu matwaistcir HighCarbohydrate HighqualityProteinScore antioxidantscore TotalPhyActScore JobOutsideHome BiomassExpall,beta
+regress R5 Height chdl_18y ParentalEdu matwaistcir HighCarbohydrate HighqualityProteinScore antioxidantscore TotalPhyActScore JobOutsideHome BiomassExpall,beta
+regress R5 Height chdl_18y c.ParentalEdu#Gender matwaistcir HighCarbohydrate HighqualityProteinScore antioxidantscore TotalPhyActScore JobOutsideHome BiomassExpall,beta
+regress R5 Height chdl_18y ParentalEdu c.matwaistcir#Gender HighCarbohydrate HighqualityProteinScore antioxidantscore TotalPhyActScore JobOutsideHome BiomassExpall,beta
+regress R5 Height chdl_18y ParentalEdu matwaistcir c.HighCarbohydrate#Gender HighqualityProteinScore antioxidantscore TotalPhyActScore JobOutsideHome BiomassExpall,beta
+regress R5 Height chdl_18y ParentalEdu matwaistcir HighCarbohydrate c.HighqualityProteinScore#Gender antioxidantscore TotalPhyActScore JobOutsideHome BiomassExpall,beta
+regress R5 Height chdl_18y ParentalEdu matwaistcir HighCarbohydrate HighqualityProteinScore c.antioxidantscore#Gender TotalPhyActScore JobOutsideHome BiomassExpall,beta
+regress R5 Height chdl_18y ParentalEdu matwaistcir HighCarbohydrate HighqualityProteinScore antioxidantscore c.TotalPhyActScore#Gender JobOutsideHome BiomassExpall,beta
+regress R5 Height chdl_18y ParentalEdu matwaistcir HighCarbohydrate HighqualityProteinScore antioxidantscore TotalPhyActScore i.JobOutsideHome#Gender BiomassExpall,beta
+regress R5 Height chdl_18y ParentalEdu matwaistcir HighCarbohydrate HighqualityProteinScore antioxidantscore TotalPhyActScore c.JobOutsideHome#Gender BiomassExpall,beta
+regress R5 Height chdl_18y ParentalEdu matwaistcir HighCarbohydrate HighqualityProteinScore antioxidantscore TotalPhyActScore JobOutsideHome c.BiomassExpall#Gender,beta
+
+
+
+
+
+
+
+
+x5
+ 
+ 
+ regress X5 Height Weight gestationalagefinal age wt matwaistcir betar2 HighqualityProteinScore  TotalPhyActScore JobOutsideHome ,beta
+regress X5 c.Height#Gender Weight gestationalagefinal age wt matwaistcir betar2 HighqualityProteinScore  TotalPhyActScore JobOutsideHome ,beta
+regress X5 Height c.Weight#Gender gestationalagefinal age wt matwaistcir betar2 HighqualityProteinScore  TotalPhyActScore JobOutsideHome ,beta
+regress X5 Height Weight c.gestationalagefinal#Gender age wt matwaistcir betar2 HighqualityProteinScore  TotalPhyActScore JobOutsideHome ,beta
+regress X5 Height Weight gestationalagefinal c.age#Gender wt matwaistcir betar2 HighqualityProteinScore  TotalPhyActScore JobOutsideHome ,beta
+regress X5 Height Weight gestationalagefinal age c.wt#Gender matwaistcir betar2 HighqualityProteinScore  TotalPhyActScore JobOutsideHome ,beta
+regress X5 Height Weight gestationalagefinal age wt c.matwaistcir#Gender betar2 HighqualityProteinScore  TotalPhyActScore JobOutsideHome ,beta
+regress X5 Height Weight gestationalagefinal age wt matwaistcir c.betar2#Gender HighqualityProteinScore  TotalPhyActScore JobOutsideHome ,beta
+regress X5 Height Weight gestationalagefinal age wt matwaistcir betar2 c.HighqualityProteinScore#Gender  TotalPhyActScore JobOutsideHome ,beta
+regress X5 Height Weight gestationalagefinal age wt matwaistcir betar2 HighqualityProteinScore c.TotalPhyActScore#Gender JobOutsideHome ,beta
+regress X5 Height Weight gestationalagefinal age wt matwaistcir betar2 HighqualityProteinScore TotalPhyActScore c.JobOutsideHome#Gender ,beta
+ 
+ 
+ 
+ //* Missing data for sensitivity analysis*//
+ 
+ generate missingchecksubjecthcatbirth=1
+replace missingchecksubjecthcatbirth=2 if headcirc ==.
+tab missingchecksubjecthcatbirth
+save "C:\Users\Hagrid\Desktop\march\new final analysis and anthro data\fealfinaldataset.dta", replace
+generate missingcheckmaternalheight=1
+replace  missingcheckmaternalheight=2 if height_mother ==.
+tab  missingcheckmaternalheight
+gen  missingcheckmaternalbmi=1
+replace  missingcheckmaternalbmi=2 if bmi ==.
+gen  missingsubjectBMI=1
+replace  missingsubjectBMI=2 if subjectbmi ==.
+save "C:\Users\Hagrid\Desktop\march\new final analysis and anthro data\fealfinaldataset.dta", replace
+gen  missingsubjectproteinscore=1
+replace  missingsubjectproteinscore=2 if HighqualityProteinScore ==.
+gen  missingsubjectcarbscore=
+replace  missingsubjectcarbscore=2 if HighCarbohydrate ==.
+save "C:\Users\Hagrid\Desktop\march\new final analysis and anthro data\fealfinaldataset.dta", replace
+gen  missingR5=1
+replace  missingR5=2 if R5==.
+gen  missingX5=1
+replace  missingX5=2 if X5==.
+gen missingcsyst_18y=1
+replace  missingcsyst_18y=2 if csyst_18y ==.
+gen  missing chdl_18y =1
+gen  missingchdl_18y =1
+replace   missingchdl_18y=2 if csyst_18y ==.
+save "C:\Users\Hagrid\Desktop\march\new final analysis and anthro data\fealfinaldataset.dta", replace
+
+gen missingFVCcheck=0
+replace missingFVCcheck=1 if FVC==.
+
+
+gen missingFEVcheck=0
+replace missingFEVcheck=1 if FVC==.
+tab missingFEVcheck
+
+
+
+ttest FVC,by(maternalbmimissing)
+ttest FVC,by( hcmissing )
+ttest FVC,by( maternalbpmissing )
+ttest FVC,by( childbpmissing )
+ttest FVC,by( childmissingWC )
+ttest FVC,by(maternalbmimissing)
+
+ttest FEV1,by(maternalbmimissing)
+ttest FEV1,by( hcmissing )
+ttest FEV1,by( maternalbpmissing )
+ttest FEV1,by( childbpmissing )
+ttest FEV1,by( childmissingWC )
+ttest FEV1,by(maternalbmimissing)
+
+
+ttest R5,by(maternalbmimissing)
+ttest R5,by( hcmissing )
+ttest R5,by( maternalbpmissing )
+ttest R5,by( childbpmissing )
+ttest R5,by( childmissingWC )
+ttest R5,by(maternalbmimissing)
+
+ttest X5,by(maternalbmimissing)
+ttest X5,by( hcmissing )
+ttest X5,by( maternalbpmissing )
+ttest X5,by( childbpmissing )
+ttest X5,by( childmissingWC )
+ttest X5,by(maternalbmimissing)
+
+
+
+//*global list PCA*//
+
+//*outcomes*//
+
+R5 X5 X20 R20 GLIfvcpercentpredicted GLIfevpercentpredicted
+
+global xlist zWaist_cir Education ParentalEdu EverSmoker BiomassExpall BurningHouseholdWasteForHeating SunlightExpHours TotalPhyActScore CommuteviaRoadswithheavytraffic HouseWalls TimeSpentCommutinghrs SeparateKitchen HighCarbohydrate ComplexCarbohydrates HighqualityProteinScore LowQualityProteinScore ironscore antioxidantscore age gestationalagefinal wt height_mother matwaistcir bmi syst_2 diast_2 hb2 wbc2 rbc2 glfast2maternal gl2hr_maternal chol2 hdlchol2 triglyceride_2ndvisit homar2 betar2 birthweightkg adjbw length headcirc chestcircum abdcirc midarmcircm tricepcircum subscapularnewborn footlennewborn csht6 chc6 cma6 cwaist6 chip6 cbi6 ctr6 css6 csu6 cmthigh6 cmcalf6 cmthsf6 cmcasf6 cwt_i chc_i cht_i csht_i cma_i cwaist_i chip_i cbi_i ctr_i css_i csu_i cbmi_i cwt_18y cht_18y cbmi_18y csht_18y cwaist_18y chc_18y childwt6 childt6 cma_18y ctr_18y css_18y cbi_18y csu_18y csyst_18y cdiast_18y chb_18y cwbc_18y crbc_18y cgluf_18y cglu2hr_18y cchol_18y chdl_18y ctg_18y cbmc7 cfm7 clm7 cbmd7 carea7 cfatp_18y cleanp_18y cdispindex_18y chomabeta_18y chomas_18y chomar_18y
+global id
+
+global ncomp 4
+
+describe $xlist
+summarize $xlist
+corr $xlist
+pca $xlist
+screeplot
+screeplot,yline (1)
+pca $xlist,mineigen(1)
+pca $xlist,factor ($ncomp)
+
+pca $xlist,factor($ncomp) blanks(0.3)
+rotate,varimax
+rotate, varimax blanks(0.3)
+rotate, clear
+loadingplot
+scoreplot
+scoreplot,mlable($id)
+estat common
+predict pca1 pca2 pca3 pca4
+estat kmo
+alpha $xlist
+
+
+
+
+
+//* July 12th
+
+
+
+
+
+
+//*July 9th 2020
+
+//*conceptual framework using EFA , CFA and SEM*//
+
+//*fvc percentage of preidcted*//
+
+//*global list from FR var selection 
+
+zhcbirth gestationalagefinal zchangehtfirst5 Waist_cir cdispindex_18y age height_mother syst_2 rbc2 HighqualityProteinScore HighCarbohydrate HouseWalls
+
+global xlist zhcbirth gestationalagefinal zchangehtfirst5 Waist_cir cdispindex_18y age height_mother syst_2 rbc2 HighqualityProteinScore HighCarbohydrate HouseWalls
+global id
+//*global ncomp 4
+describe $xlist
+summarize $xlist
+corr $xlist
+factor $xlist
+screeplot
+screeplot,yline (1)
+factor $xlist,mineigen(1)
+factor $xlist,factor ($ncomp)
+factor $xlist,factor($ncomp) blanks(0.37)
+rotate,varimax
+rotate, varimax blanks(0.37)
+rotate, clear
+loadingplot
+scoreplot
+scoreplot,mlable($id)
+estat common
+predict f1
+estat kmo
+alpha $xlist
+
+
+
+//* july 12th hierarchichal regression models
+
+
+//* FVC
+
+hireg GLIfvcpercentpredicted (age height_mother matwaistcir)(syst_2 rbc2)(zhcbirth gestationalagefinal)(zchangehtfirst5)(Waist_cir cdispindex_18y chdl_18y)(HighCarbohydrate HighqualityProteinScore HouseWalls)
+
+//*FEV1
+
+hireg GLIfevpercentpredicted (age bmi)(hcbylengthatbirth) (zchangewtfirst5) (Waist_cir R5 cdispindex_18y)(HighCarbohydrate HighqualityProteinScore) (HouseWalls)
+
+//*R5
+
+hireg R5 (ParentalEdu matwaistcir) (Height chdl_18y) (HighCarbohydrate HighqualityProteinScore antioxidantscore) (TotalPhyActScore) (JobOutsideHome BiomassExpall)
+
+//*X5
+
+
+ 
+ //* exploratory analysis 13th July
+ 
+ //*changes in pattern of association during growth
+ 
+ //* FVC
+ 
+
+
+regress GLIfvcpercentpredicted zlenbirth zhfasix zhfatwelve zhfaeighteen,beta
+regress GLIfvcpercentpredicted zweibirth zwfasix zwfatwelve zwfaeighteen,beta
+regress GLIfvcpercentpredicted zbmibirth zbfasix zbfatwelve zbfaeighteen ,beta
+regress GLIfvcpercentpredicted subscapularnewborn css6 css_i css_18y,bet
+
+
+//*FEV1
+regress GLIfevpercentpredicted zlenbirth zhfasix zhfatwelve zhfaeighteen,beta
+regress GLIfevpercentpredicted zweibirth zwfasix zwfatwelve zwfaeighteen,beta
+regress GLIfevpercentpredicted zbmibirth zbfasix zbfatwelve zbfaeighteen ,beta
+regress GLIfevpercentpredicted subscapularnewborn css6 css_i css_18y,bet
+
+
+
+//*R5
+regress R5 zlenbirth zhfasix zhfatwelve zhfaeighteen,beta
+regress R5 zweibirth zwfasix zwfatwelve zwfaeighteen,beta
+regress R5 zbmibirth zbfasix zbfatwelve zbfaeighteen ,beta
+regress R5 subscapularnewborn css6 css_i css_18y,bet
+
+
+
+//*X5
+
+regress X5 zlenbirth zhfasix zhfatwelve zhfaeighteen,beta
+regress X5 zweibirth zwfasix zwfatwelve zwfaeighteen,beta
+regress X5 zbmibirth zbfasix zbfatwelve zbfaeighteen ,beta
+regress X5 subscapularnewborn css6 css_i css_18y,bet
+
+
+
+//* Median Lung Function Across Exposure Categories
+
+//*nutrition
+
+graph box GLIfvcpercentpredicted,over( highqualityproteinscorecat)
+
+graph box GLIfevpercentpredicted,over( highqualityproteinscorecat)
+
+graph box R5,over( highqualityproteinscorecat)
+
+graph box X5,over( highqualityproteinscorecat)
+
+
+graph box GLIfvcpercentpredicted,over( highcarbscorecat)
+
+graph box GLIfevpercentpredicted,over( highcarbscorecat)
+
+graph box R5,over( highcarbscorecat)
+
+graph box X5,over( highcarbscorecat)
+
+
+graph box GLIfvcpercentpredicted,over( antioxidantscorecat)
+
+graph box GLIfevpercentpredicted,over( antioxidantscorecat)
+
+graph box R5,over( antioxidantscorecat)
+
+graph box X5,over( antioxidantscorecat)
+
+
+
+
+//*physical activity
+
+graph box GLIfvcpercentpredicted,over( physicalactcat)
+
+graph box GLIfevpercentpredicted,over( physicalactcat)
+
+graph box R5,over( physicalactcat)
+
+graph box X5,over( physicalactcat)
+
+
+
+//* maternal
+
+     //*hypertensive
+	 graph box GLIfvcpercentpredicted,over( finalhypertensivemom)
+
+graph box GLIfevpercentpredicted,over( finalhypertensivemom)
+
+graph box R5,over( finalhypertensivemom)
+
+graph box X5,over( finalhypertensivemom)
+
+	 //*insulin Res
+	 graph box GLIfvcpercentpredicted,over( POPIRMOM)
+
+graph box GLIfevpercentpredicted,over( POPIRMOM)
+
+graph box R5,over( POPIRMOM)
+
+graph box X5,over( POPIRMOM)
+
+	 //*Obese
+	 graph box GLIfvcpercentpredicted,over( WHOObeseMom)
+
+graph box GLIfevpercentpredicted,over(  WHOObeseMom)
+
+graph box R5,over(  WHOObeseMom)
+
+graph box X5,over(  WHOObeseMom)
+
+	 //*Anemic
+graph box GLIfvcpercentpredicted,over(  anemicmomWHO)
+
+graph box GLIfevpercentpredicted,over(  anemicmomWHO)
+
+graph box R5,over( anemicmomWHO)
+
+graph box X5,over( anemicmomWHO)
+
+
+
+//* SEM and FA*
+
+
+//* Quantifying rapid catch up growth
+
+
+//* STudying interactions
+
+
+//18th november 2020
+
+//* BMI and anthropometry
+
+use "C:\Users\Admin\Desktop\Work backup\graphs\fealdata20latest.dta"
+sum adjbw
+lowbirthweightperson=0
+generate lowbirthweightperson=0
+replace lowbirthweightperson=1 if adjbw<2500
+sum lowbirthweightperson
+tab lowbirthweightperson
+generate pretermbirth=0
+sum gestationalageduringdelivery
+replace pretermbirth=1 if gestationalageduringdelivery<37
+sum adjbw
+generate SGAbabies=0
+replace SGAbabies=1 if adjbw<2322.046
+save "C:\Users\Admin\Desktop\Work backup\graphs\fealdata20latest.dta", replace
+generate deltahaz=0
+replace deltahaz=zhfasix-zlenbirth
+count of deltahaz>=0
+count if deltahaz>=0
+count if detlahaz=0
+count if deltahaz=0
+count if deltahaz==0
+sum deltahaz
+tab deltahaz
+count if deltahaz>0
+count if zhfasix>zlenbirth
+generate lbwwithcatchup=0
+generate pretermwithcatchup=0
+generate sgawithcatchup=0
+generate catchupgrowth=0
+replace catchupgrowth=1 if zhfasix> zlenbirth
+replace lbwwithcatchup=1 if lowbirthweightperson==1 & catchupgrowth==1
+replace  pretermwithcatchup=1 if  pretermwithcatchup==1 & catchupgrowth==1
+replace  sgawithcatchup=1 if  SGAbabies==1 & catchupgrowth==1
+tab lbwwithcatchup pretermwithcatchup sgawithcatchup
+sum lbwwithcatchup pretermwithcatchup sgawithcatchup
+sum lbwwithcatchup
+tab lbwwithcatchup
+tab pretermwithcatchup
+tab sgawithcatchup
+tab lowbirthweightperson
+tab pretermbirth
+tab SGAbabies
+tab adjbw
+count if adjbw<2322.046
+count if adjbw<2500
+tab lowbirthweightperson
+tab preterm birth
+tab pretermbirth
+tab gestationalageduringdelivery
+tab deltahaz
+count if SGAbabies==1
+tab adjbw
+tab SGAbabies
+drop SGAbabies
+generate SGAbabies= adjbw
+replace SGAbabies=1 if adjbw<2500
+replace SGAbabies=0 if adjbw>=2500
+tab SGAbabies
+count if deltahaz!=0
+count if deltahaz=0
+count if deltahaz==0
+count if deltahaz>0
+delete deltaHAZ
+drop deltahaz
+genertae deltahaz=0
+generate deltahaz=0
+replace deltahaz=1 if zhfasix>birthclenhei
+tab lbwwithcatchup
+tab pretermwithcatchup
+tab sgawithcatchup
+deltapuberty=0
+generate deltahazpuberty=0
+replace deltahazpuberty=1 if zhfaeighteen>zhfatwelve
+ttest GLIfvcpercentpredicted, by( lowbirthweightperson)
+ttest GLIfvcpercentpredicted, by( lowbirthweightperson)
+ttest GLIfvcpercentpredicted, by( pretermbirth )
+ttest GLIfvcpercentpredicted, by( SGAbabies )
+ttest GLIfevpercentpredicted , by( lowbirthweightperson )
+ttest GLIfevpercentpredicted , by( pretermbirth )
+ttest GLIfevpercentpredicted , by( SGAbabies )
+ttest R5, by( lowbirthweightperson)
+ttest R5, by( pretermbirth )
+ttest R5, by( SGAbabies )
+ttest X5, by( lowbirthweightperson)
+ttest X5, by( pretermbirth )
+ttest X5, by( SGAbabies )
+ttest GLIfvcpercentpredicted, by( lbwwithcatchup )
+ttest GLIfvcpercentpredicted, by( pretermwithcatchup )
+ttest GLIfvcpercentpredicted, by( sgawithcatchup )
+ttest GLIfevpercentpredicted , by( lbwwithcatchup )
+ttest GLIfevpercentpredicted , by( sgawithcatchup )
+ttest R5, by( sgawithcatchup )
+ttest X5, by( sgawithcatchup )
+ttest R5, by( lbwwithcatchup )
+ttest X5, by( lbwwithcatchup )
+REGRESS GLIfvcpercentpredicted lowbirthweightperson
+regress GLIfvcpercentpredicted lowbirthweightperson
+regress GLIfvcpercentpredicted pretermbirth
+regress GLIfvcpercentpredicted sgawithcatchup
+regress GLIfevpercentpredicted sgawithcatchup
+regress GLIfevpercentpredicted lowbirthweightperson
+regress GLIfevpercentpredicted pretermbirth
+regress GLIfevpercentpredicted lbwwithcatchup
+regress GLIfevpercentpredicted pretermwithcatchup
+regress GLIfevpercentpredicted sgawithcatchup
+regress GLIfevpercentpredicted catchupgrowth
+regress GLIfvcpercentpredicted catchupgrowth
+regress R5 catchupgrowth
+regress X5 catchupgrowth
+regress GLIfevpercentpredicted SGAbabies
+regress GLIfevpercentpredicted catchupgrowth
+regress GLIfevpercentpredicted deltahaz
+regress GLIfvcpercentpredicted deltahaz
+drop deltahaz catchupgrowth sgawithcatchup pretermwithcatchup lbwwithcatchup
+drop deltahazpuberty
+generate catchupgrowth=0
+replace catchupgrowth=1 if zhfasix>zlenbirth
+regress GLIfevpercentpredicted catchupgrowth
+regress GLIfvcpercentpredicted deltahaz
+regress GLIfvcpercentpredicted catchupgrowth
+regress R5 catchupgrowth
+regress X5 catchupgrowth
+ttest GLIfvcpercentpredicted,by( catchupgrowth)
+ttest GLIfevpercentpredicted,by( catchupgrowth)
+ttest R5,by( catchupgrowth)
+ttest X5,by( catchupgrowth)
+generate lbwcatchup=0
+generate pretermcatchup=0
+generate sgacatchup=0
+replace lbwcatchup=1, if lowbirthweightperson==1 & catchupgrowth==1
+replace lbwcatchup=1 if lowbirthweightperson==1 & catchupgrowth==1
+replace pretermcatchup =1 if pretermbirth ==1 & catchupgrowth==1
+replace  sgacatchup =1 if SGAbabies ==1 & catchupgrowth==1
+tab catchupgrowth
+ttest GLIfvcpercentpredicted,by(lbwcatchup)
+ttest GLIfvcpercentpredicted,by(pretermcatchup)
+ttest GLIfvcpercentpredicted,by(sgacatchup)
+ttest GLIferpercentpredicted,by(lbwcatchup)
+ttest GLIfevpercentpredicted,by(pretermcatchup)
+ttest GLIfevpercentpredicted,by(sgacatchup)
+ttest R5,by(lbwcatchup)
+ttest R5,by(pretermcatchup)
+ttest R5,by(sgacatchup)
+ttest X5,by(pretermcatchup)
+ttest X5,by(lbwcatchup)
+ttest X5,by(sgacatchup)
+
+
+
+//* catch up growth analysis*//
+
+generate catchupheight=0
+replace catchupheight=1 if zhfasix> zlenbirth
+tab  catchupheight
+generate catchupweight=0
+ replace catchupweight=1 if zwflbirth< zwfasix
+tab catchupweight
+
+ttest GLIfvcpercentpredicted,by( lowbirthweightatbirth)
+ttest GLIfevpercentpredicted ,by( lowbirthweightatbirth)
+
+count if zhfasix> zlenbirth
+count if zhfasix> zlenbirth & zlenbirth!=.& zhfasix!=.
+
+replace catchupht=1 if zhfasix> zlenbirth & zlenbirth!=.& zhfasix!=.
+generate catchupwt=0
+
+replace catchupw=1 if zweibirth< zwfasix & zweibirth!=. & zwfasix!=.
+count if zweibirth< zwfasix & zweibirth!=. & zwfasix!=.
+
+ttest GLIfvcpercentpredicted,by( catchupht)
+ttest GLIfevpercentpredicted ,by( catchupht)
+
+
+
+//* Analysis October 6th 2021*//
+
+//* BW categories*//
+
+generate birthweightcategories=0
+replace birthweightcategories=1 if birthweightkg>=0 & birthweightkg<=2.0
+replace birthweightcategories=2 if birthweightkg>2.0 & birthweightkg<=2.25
+replace birthweightcategories=3 if birthweightkg>2.25 & birthweightkg<=2.5
+replace birthweightcategories=4 if birthweightkg>2.5 & birthweightkg<=2.75
+replace birthweightcategories=5 if birthweightkg>2.75 & birthweightkg<=3.00
+replace birthweightcategories=6 if birthweightkg>3.00 & birthweightkg<=3.25
+replace birthweightcategories=7 if birthweightkg>3.25
+sum birthweightcategories
+tab birthweightcategories
+replace birthweightcategories=0 if birthweightkg==.
+tab birthweightcategories
+save "C:\Users\Admin\Desktop\paper\PMNS Lung function paper\paper 2\latest\graphs\fealdata20latest.dta", replace
+
+
+//* Mean FVC by BW categories*//
+
+
+sum  GLIfvcpercentpredicted if  birthweightcategories==1
+sum  GLIfvcpercentpredicted if  birthweightcategories==2
+sum  GLIfvcpercentpredicted if  birthweightcategories==3
+sum  GLIfvcpercentpredicted if  birthweightcategories==4
+sum  GLIfvcpercentpredicted if  birthweightcategories==5
+sum  GLIfvcpercentpredicted if  birthweightcategories==6
+sum  GLIfvcpercentpredicted if  birthweightcategories==7
+save "C:\Users\Admin\Desktop\paper\PMNS Lung function paper\paper 2\latest\graphs\fealdata20latest.dta", replace
+
+
+//*main table by Gender*//
+
+//*FVC
+
+sum  GLIfvcpercentpredicted if  birthweightcategories==1 & Gender==0
+sum  GLIfvcpercentpredicted if  birthweightcategories==2 & Gender==0
+sum  GLIfvcpercentpredicted if  birthweightcategories==3 & Gender==0
+sum  GLIfvcpercentpredicted if  birthweightcategories==4 & Gender==0
+sum  GLIfvcpercentpredicted if  birthweightcategories==5 & Gender==0
+sum  GLIfvcpercentpredicted if  birthweightcategories==6 & Gender==0
+sum  GLIfvcpercentpredicted if  birthweightcategories==7 & Gender==0
+sum  GLIfvcpercentpredicted if  birthweightcategories==1 & Gender==1
+sum  GLIfvcpercentpredicted if  birthweightcategories==2 & Gender==1
+sum  GLIfvcpercentpredicted if  birthweightcategories==3 & Gender==1
+sum  GLIfvcpercentpredicted if  birthweightcategories==4 & Gender==1
+sum  GLIfvcpercentpredicted if  birthweightcategories==5 & Gender==1
+sum  GLIfvcpercentpredicted if  birthweightcategories==6 & Gender==1
+sum  GLIfvcpercentpredicted if  birthweightcategories==7 & Gender==1
+
+
+
+//*main table by Gender*//
+
+//*FEV1
+
+sum  GLIfevpercentpredicted if  birthweightcategories==1 & Gender==0
+sum  GLIfevpercentpredicted if  birthweightcategories==2 & Gender==0
+sum  GLIfevpercentpredicted if  birthweightcategories==3 & Gender==0
+sum  GLIfevpercentpredicted if  birthweightcategories==4 & Gender==0
+sum  GLIfevpercentpredicted if  birthweightcategories==5 & Gender==0
+sum  GLIfevpercentpredicted if  birthweightcategories==6 & Gender==0
+sum  GLIfevpercentpredicted if  birthweightcategories==7 & Gender==0
+sum  GLIfevpercentpredicted if  birthweightcategories==1 & Gender==1
+sum  GLIfevpercentpredicted if  birthweightcategories==2 & Gender==1
+sum  GLIfevpercentpredicted if  birthweightcategories==3 & Gender==1
+sum  GLIfevpercentpredicted if  birthweightcategories==4 & Gender==1
+sum  GLIfevpercentpredicted if  birthweightcategories==5 & Gender==1
+sum  GLIfevpercentpredicted if  birthweightcategories==6 & Gender==1
+sum  GLIfevpercentpredicted if  birthweightcategories==7 & Gender==1
+
+
+//* R5*//
+
+sum  R5 if  birthweightcategories==1 & Gender==0
+sum  R5 if  birthweightcategories==2 & Gender==0
+sum  R5 if  birthweightcategories==3 & Gender==0
+sum  R5 if  birthweightcategories==4 & Gender==0
+sum  R5 if  birthweightcategories==5 & Gender==0
+sum  R5 if  birthweightcategories==6 & Gender==0
+sum  R5 if  birthweightcategories==7 & Gender==0
+sum  R5 if  birthweightcategories==1 & Gender==1
+sum  R5 if  birthweightcategories==2 & Gender==1
+sum  R5 if  birthweightcategories==3 & Gender==1
+sum  R5 if  birthweightcategories==4 & Gender==1
+sum  R5 if  birthweightcategories==5 & Gender==1
+sum  R5 if  birthweightcategories==6 & Gender==1
+sum  R5 if  birthweightcategories==7 & Gender==1
+
+//*X5*//
+
+sum  X5 if  birthweightcategories==1 & Gender==0
+sum  X5 if  birthweightcategories==2 & Gender==0
+sum  X5 if  birthweightcategories==3 & Gender==0
+sum  X5 if  birthweightcategories==4 & Gender==0
+sum  X5 if  birthweightcategories==5 & Gender==0
+sum  X5 if  birthweightcategories==6 & Gender==0
+sum  X5 if  birthweightcategories==7 & Gender==0
+sum  X5 if  birthweightcategories==1 & Gender==1
+sum  X5 if  birthweightcategories==2 & Gender==1
+sum  X5 if  birthweightcategories==3 & Gender==1
+sum  X5 if  birthweightcategories==4 & Gender==1
+sum  X5 if  birthweightcategories==5 & Gender==1
+sum  X5 if  birthweightcategories==6 & Gender==1
+sum  X5 if  birthweightcategories==7 & Gender==1
+
+//*ANOVA Tables *//
+
+oneway GLIfvcpercentpredicted birthweightcategories,tabulate
+pwmean GLIfvcpercentpredicted,over( birthweightcategories) mcompare(tukey) effects
+pwmean GLIfvcpercentpredicted ,over( birthweightcategories) mcompare(tukey) effects
+
+//* new regression*//
+
